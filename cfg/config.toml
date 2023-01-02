@@ -10,7 +10,7 @@ DRIP_ADDRESS = "0x20f663CEa80FaCE82ACDFA3aAE6862d246cE0333"
 [WALLET-1]
 NAME = "Wallet Nickname Here"
 ENCRYPTED_PK = "Encrypted PK goes here (use -encrypt)"
-WALLETADDRESS = "Your wallet address"
+WALLET_ADDRESS = "Your wallet address"
 REFRESH_INTERVAL = 3600
 HYDRATE = 7
 CLAIM = 0
@@ -20,7 +20,7 @@ CURRENT_RATIO = 0
 [WALLET-2]
 NAME = "Wallet Nickname Here"
 ENCRYPTED_PK = "Encrypted PK goes here (use -encrypt)"
-WALLETADDRESS = "Your wallet address"
+WALLET_ADDRESS = "Your wallet address"
 REFRESH_INTERVAL = 3600
 HYDRATE = 6
 CLAIM = 1
@@ -30,7 +30,7 @@ CURRENT_RATIO = 0
 [WALLET-3]
 NAME = "Wallet Nickname Here"
 ENCRYPTED_PK = "Encrypted PK goes here (use -encrypt)"
-WALLETADDRESS = "Your wallet address"
+WALLET_ADDRESS = "Your wallet address"
 REFRESH_INTERVAL = 3600
 HYDRATE = 4
 CLAIM = 3
