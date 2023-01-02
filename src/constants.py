@@ -33,7 +33,6 @@ DIR_DIR = "src"
 FILE_DAT = "global.db"
 FILE_CFG = "config.toml"
 FILE_TMPCFG = "config_template.toml"
-FILE_TKN = "key.json"
 FILE_LOG = f"hydrate.log"
 
 ASCII_ART = "logo.md"
