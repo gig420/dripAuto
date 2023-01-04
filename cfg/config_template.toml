@@ -1,5 +1,8 @@
 [MAIN]
 SECURE_KEY = ""
+NODE =  "https://bsc-dataseed.binance.org/"
+GWEI = 5
+GAS = 500000
 LOG_FORMAT = "%(asctime)s | %(threadName)s | %(name)s | %(message)s"
 
 [DRIPNETWORK]
@@ -14,7 +17,6 @@ WALLET_ADDRESS = "Your wallet address"
 REFRESH_INTERVAL = 3600
 HYDRATE = 7
 CLAIM = 0
-
 CURRENT_RATIO = 0
 
 [WALLET-2]
@@ -24,7 +26,6 @@ WALLET_ADDRESS = "Your wallet address"
 REFRESH_INTERVAL = 3600
 HYDRATE = 6
 CLAIM = 1
-
 CURRENT_RATIO = 0
 
 [WALLET-3]
@@ -34,5 +35,4 @@ WALLET_ADDRESS = "Your wallet address"
 REFRESH_INTERVAL = 3600
 HYDRATE = 4
 CLAIM = 3
-
 CURRENT_RATIO = 0

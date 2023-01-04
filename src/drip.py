@@ -20,8 +20,7 @@ class Drip:
 
         threading.current_thread().name = "Drip"
 
-        self.bsc = "https://bsc-dataseed.binance.org/"
-        self.web3 = Web3(Web3.HTTPProvider(self.bsc))
+        self.web3 = Web3(Web3.HTTPProvider(self.config.get('MAIN', 'NODE')))
 
         with open(os.path.join(con.DIR_RES, 'faucet.json')) as f:
             self.faucetAbi = json.load(f)
@@ -79,7 +78,7 @@ class Drip:
             if claims_available > deposit_percent:
                 if current_ratio % (hydrate + claim) < hydrate:
                     try:
-                        tx = self.faucetContract.functions.roll().buildTransaction({'nonce': self.web3.eth.get_transaction_count(address), 'gas': 500000, 'gasPrice': self.web3.toWei('5','gwei'),})
+                        tx = self.faucetContract.functions.roll().buildTransaction({'nonce': self.web3.eth.get_transaction_count(address), 'gas': self.config.get('MAIN', 'GAS'), 'gasPrice': self.web3.toWei(self.config.get('MAIN', 'GWEI'),'gwei'),})
                         logging.info(f'Successfully HYDRATED {claims_available:,.2f} DRiP (TXN: xx)')
                         current_ratio += 1
                         if current_ratio >= hydrate + claim:
@@ -92,7 +91,7 @@ class Drip:
 
                 else:
                     try:
-                        tx = self.faucetContract.functions.claim().buildTransaction({'nonce': self.web3.eth.get_transaction_count(address), 'gas': 500000, 'gasPrice': self.web3.toWei('5','gwei'),})
+                        tx = self.faucetContract.functions.claim().buildTransaction({'nonce': self.web3.eth.get_transaction_count(address), 'gas': self.config.get('MAIN', 'GAS'), 'gasPrice': self.web3.toWei(self.config.get('MAIN', 'GWEI'),'gwei'),})
                         logging.info(f'[{name}] Successfully HYDRATED {claims_available:,.2f} DRiP (TXN: xx)')
                         current_ratio += 1
                         if current_ratio >= hydrate + claim:
