@@ -21,19 +21,13 @@ PCS_ADDRESS = "0xa0feB3c81A36E885B6608DF7f0ff69dB97491b58"
 PRICE_CONTRACT = "0x64a4c814311bd6acdc589aa907b19920404b9a0d"
 
 DIR_SRC = os.path.basename(os.path.dirname(__file__))
-DIR_TEM = "templates"
-DIR_PLG = "plugins"
 DIR_RES = "res"
 DIR_CFG = "cfg"
 DIR_LOG = "log"
-DIR_DAT = "dat"
-DIR_TMP = "tmp"
 DIR_DIR = "src"
 
-FILE_DAT = "global.db"
 FILE_CFG = "config.toml"
 FILE_TMPCFG = "config_template.toml"
-FILE_TKN = "key.json"
 FILE_LOG = f"hydrate.log"
 
 ASCII_ART = "logo.md"

@@ -3,6 +3,8 @@ SECURE_KEY = ""
 NODE =  "https://bsc-dataseed.binance.org/"
 GWEI = 5
 GAS = 500000
+MIN_AMOUNT_BNB = 0.003
+
 LOG_FORMAT = "%(asctime)s | %(threadName)s | %(name)s | %(message)s"
 
 [DRIPNETWORK]
@@ -10,13 +12,22 @@ FAUCET_ADDRESS = "0xFFE811714ab35360b67eE195acE7C10D93f89D8C"
 RESERVOIR_ADDRESS = "0xB486857fac4254A7ffb3B1955EE0C0A2B2ca75AB"
 DRIP_ADDRESS = "0x20f663CEa80FaCE82ACDFA3aAE6862d246cE0333"
 
+[TOTAL_STATS]
+TOTAL_CLAIMS = 0
+TOTAL_HYDATES = 0
+
 [WALLET-1]
 NAME = "Wallet Nickname Here"
 ENCRYPTED_PK = "Encrypted PK goes here (use -encrypt)"
 WALLET_ADDRESS = "Your wallet address"
 REFRESH_INTERVAL = 3600
+
+MIN_HYDRATE_MODE = FALSE
+MIN_HYDRATE_AMOUNT = 5
+
 HYDRATE = 7
 CLAIM = 0
+
 CURRENT_RATIO = 0
 
 [WALLET-2]
@@ -24,8 +35,13 @@ NAME = "Wallet Nickname Here"
 ENCRYPTED_PK = "Encrypted PK goes here (use -encrypt)"
 WALLET_ADDRESS = "Your wallet address"
 REFRESH_INTERVAL = 3600
-HYDRATE = 6
-CLAIM = 1
+
+MIN_HYDRATE_MODE = FALSE
+MIN_HYDRATE_AMOUNT = 5
+
+HYDRATE = 7
+CLAIM = 0
+
 CURRENT_RATIO = 0
 
 [WALLET-3]
@@ -33,6 +49,11 @@ NAME = "Wallet Nickname Here"
 ENCRYPTED_PK = "Encrypted PK goes here (use -encrypt)"
 WALLET_ADDRESS = "Your wallet address"
 REFRESH_INTERVAL = 3600
-HYDRATE = 4
-CLAIM = 3
+
+MIN_HYDRATE_MODE = FALSE
+MIN_HYDRATE_AMOUNT = 5
+
+HYDRATE = 7
+CLAIM = 0
+
 CURRENT_RATIO = 0

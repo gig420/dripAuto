@@ -67,47 +67,67 @@ class Drip:
     def checkWallet(self, wallet_number, name, private_key, address, hydrate, claim, current_ratio):
         threading.current_thread().name = name
         balanceBNB = Web3.fromWei(self.web3.eth.getBalance(address), 'ether')
-        if balanceBNB < 0.003:
+        if balanceBNB < self.config.get('MIN_AMOUNT_BNB'):
             logging.fatal(f'Insufficient BNB for GAS, Balance: {balanceBNB:,.3f} BNB')
             return
         else:
             claims_available = self.faucetContract.functions.claimsAvailable(address).call() / 1e18
             deposit_amount = self.faucetContract.functions.userInfoTotals(address).call()[1] / 1e18
             deposit_percent = deposit_amount / 100
-            
-            if claims_available > deposit_percent:
-                if current_ratio % (hydrate + claim) < hydrate:
-                    try:
-                        tx = self.faucetContract.functions.roll().buildTransaction({'nonce': self.web3.eth.get_transaction_count(address), 'gas': self.config.get('MAIN', 'GAS'), 'gasPrice': self.web3.toWei(self.config.get('MAIN', 'GWEI'),'gwei'),})
-                        logging.info(f'Successfully HYDRATED {claims_available:,.2f} DRiP (TXN: xx)')
-                        current_ratio += 1
-                        if current_ratio >= hydrate + claim:
-                            current_ratio = 0
-                        self.config.set(f'WALLET-{wallet_number}', 'CURRENT_RATIO', current_ratio)
 
-                    except ValueError as e:
-                        logging.error(f'Failed to build roll transaction: {e}')
-                        return
-
-                else:
-                    try:
-                        tx = self.faucetContract.functions.claim().buildTransaction({'nonce': self.web3.eth.get_transaction_count(address), 'gas': self.config.get('MAIN', 'GAS'), 'gasPrice': self.web3.toWei(self.config.get('MAIN', 'GWEI'),'gwei'),})
-                        logging.info(f'[{name}] Successfully HYDRATED {claims_available:,.2f} DRiP (TXN: xx)')
-                        current_ratio += 1
-                        if current_ratio >= hydrate + claim:
-                            current_ratio = 0
-                        self.config.set(f'WALLET-{wallet_number}', 'CURRENT_RATIO', current_ratio)
-
-                    except ValueError as e:
-
-                        logging.error(f'Failed to build claim transaction: {e}')
-                        return
-                signedTX = self.web3.eth.account.sign_transaction(tx, private_key)
+            min_avalible = self.config.get(f'WALLET-{wallet_number}', 'MIN_HYDRATE_AMOUNT')
+        if self.config.get(f'WALLET-{wallet_number}', 'MIN_HYDRATE_MODE') == True:
+            if min_avalible > claims_available:
+                # Select either roll or claim based on current_ratio
+                action = self.faucetContract.functions.roll if current_ratio % (hydrate + claim) < hydrate else self.faucetContract.functions.claim
                 try:
-                    self.web3.eth.send_raw_transaction(signedTX.rawTransaction)
+                    tx = action().buildTransaction({
+                        'nonce': self.web3.eth.get_transaction_count(address), 
+                        'gas': self.config.get('MAIN', 'GAS'), 
+                        'gasPrice': self.web3.toWei(self.config.get('MAIN', 'GWEI'),'gwei'),
+                    })
+                    if action == self.faucetContract.functions.roll:
+                        logging.info(f'[{name}] Successfully HYDRATED {claims_available:,.2f} DRiP (TXN: xx)')
+                    else:
+                        logging.info(f'[{name}] Successfully CLAIMED {claims_available:,.2f} DRiP (TXN: xx)')
+                    current_ratio += 1
+                    if current_ratio >= hydrate + claim:
+                        current_ratio = 0
+                    self.config.set(f'WALLET-{wallet_number}', 'CURRENT_RATIO', current_ratio)
+
                 except ValueError as e:
-                    logging.error(f'Failed to send transaction: {e}')
+                    logging.error(f'[MHM] Failed to build transaction: {e}')
+                    return
+
             else:
-                logging.info(f'Avalible drip has not hit 1%, {deposit_percent - claims_available:,.2f} drip left to go. Will try again later.')
+                logging.info(f'The amount of avalible drip has not hit the minimum amomunt, {min_avalible - claims_available:,.2f} drip left to go. Will try again later.')
                 return
 
+        # If minimum hydrate mode is not enabled, or minimum amount of drip has been reached
+        elif claims_available > deposit_percent:
+            # Select either roll or claim based on current_ratio
+            action = self.faucetContract.functions.roll if current_ratio % (hydrate + claim) < hydrate else self.faucetContract.functions.claim
+            try:
+                tx = action().buildTransaction({
+                    'nonce': self.web3.eth.get_transaction_count(address), 
+                    'gas': self.config.get('MAIN', 'GAS'), 
+                    'gasPrice': self.web3.toWei(self.config.get('MAIN', 'GWEI'),'gwei'),
+                })
+                if action == self.faucetContract.functions.roll:
+                    logging.info(f'[{name}] Successfully HYDRATED {claims_available:,.2f} DRiP (TXN: xx)')
+                else:
+                    logging.info(f'[{name}] Successfully CLAIMED {claims_available:,.2f} DRiP (TXN: xx)')
+                current_ratio += 1
+                if current_ratio >= hydrate + claim:
+                    current_ratio = 0
+                self.config.set(f'WALLET-{wallet_number}', 'CURRENT_RATIO', current_ratio)
+
+            except ValueError as e:
+                logging.error(f'[{name}] Failed to build transaction: {e}')
+                return
+            
+            signedTX = self.web3.eth.account.sign_transaction(tx, private_key)
+        try:
+            self.web3.eth.send_raw_transaction(signedTX.rawTransaction)
+        except ValueError as e:
+            logging.error(f'Failed to send transaction: {e}')
